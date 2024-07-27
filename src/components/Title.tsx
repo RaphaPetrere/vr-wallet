@@ -1,16 +1,17 @@
-import { View, Text } from 'react-native'
+import { Text } from 'react-native'
 import React from 'react'
 import theme from '../theme'
 
-const Title = ({children}: {children: string | React.ReactNode}) => {
+const Title = () => {
   return (
     <Text
       style={{
         color: theme.white,
         fontSize: 28,
+        marginBottom: 10,
       }}
     >
-      {children}
+      Wallet Test
     </Text>
   )
 }
