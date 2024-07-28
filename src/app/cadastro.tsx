@@ -12,18 +12,27 @@ const Cadastro = () => {
   const [nome, setNome] = useState('');
   const [vencimento, setVencimento] = useState('');
   const [cvv, setCVV] = useState('');
+
+  const addChar = (text: string, interval: number, char: '/' | ' ') => 
+    text.match(new RegExp(`.{1,${interval}}`, 'g'))!.join(char); 
+  //Esse Regex adiciona um espaço ou / a cada intervalo
+
+  const onlyNumbers = (text: string) => text.replace(/\D/g, '');
+
   const handleNumCartao = (text: string) => {
-    const numWithoutSpaces = text.replaceAll(' ', '');
+    const numWithoutSpaces = onlyNumbers(text);
     if(numWithoutSpaces.length > 0)
-    {
-      setNumCartao(
-        numWithoutSpaces
-        .replace(/\D/g, '') //Filtra as letras, deixando somente numeros
-        .match(new RegExp('.{1,4}', 'g'))!.join(' ') //Esse Regex adiciona um espaço a cada 4 caracteres
-      )
-    }
+      setNumCartao(addChar(numWithoutSpaces, 4, ' '))
     else
       setNumCartao('');
+  }
+
+  const handleVencimento = (text: string) => {
+    const numWithoutSlash = onlyNumbers(text);
+    if(numWithoutSlash.length > 0)
+      setVencimento(addChar(numWithoutSlash, 2, '/'))
+    else
+      setVencimento('');
   }
   return (
     <Container>
@@ -58,8 +67,8 @@ const Cadastro = () => {
                 value={vencimento}
                 placeholder='00/00'
                 inputMode='numeric'
-                onChangeText={setVencimento}
-                maxLength={4}
+                onChangeText={handleVencimento}
+                maxLength={5}
               />
             </View>
             <View style={{flex: 1}}>
@@ -68,7 +77,7 @@ const Cadastro = () => {
                 value={cvv}
                 placeholder='***'
                 inputMode='numeric'
-                onChangeText={setCVV}
+                onChangeText={(text) => setCVV(onlyNumbers(text))}
                 maxLength={3}
               />
             </View>
@@ -76,7 +85,12 @@ const Cadastro = () => {
           <CustomButton 
             text='avançar'
             type='primary'
-            isLoading
+            disabled={
+              numCartao.length !== 19 ||
+              nome.length < 5 ||
+              vencimento.length !== 5 ||
+              cvv.length !== 3
+            }
           />
         </View>
       </Body>
