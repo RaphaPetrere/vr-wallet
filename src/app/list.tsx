@@ -77,7 +77,7 @@ const List = () => {
             <View key={card.id}
               style={{
                 position: 'absolute',
-                bottom: (50*index),
+                bottom: (60*index),
                 elevation: 20 - (index * 4),
                 zIndex: cards.length - index,
                 shadowColor: theme.black,

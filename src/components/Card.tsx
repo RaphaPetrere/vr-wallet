@@ -32,7 +32,8 @@ const Card = ({card, variant}: {card: CardProps, variant: 'black' | 'green'}) =>
         width: 300,
         height: 180,
         borderRadius: 16,
-        padding: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 25,
         justifyContent: 'space-between',
         borderWidth: 1,
         borderColor: theme.black
@@ -44,7 +45,7 @@ const Card = ({card, variant}: {card: CardProps, variant: 'black' | 'green'}) =>
         <CardInfo 
           text={card.number
             .replaceAll(' ', '')
-            .replace(/.(?=.{4})/g, '*')
+            .replace(/.(?=.{4})/g, '•')
             .match(new RegExp('.{1,4}', 'g'))!
             .join(' ')
           } 
