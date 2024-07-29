@@ -1,17 +1,22 @@
 import { View, Text } from 'react-native'
 import React, { useState } from 'react'
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import Container from '../components/Container';
 import Title from '../components/Title';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import Body from '../components/Body';
+import { useCartoes } from '../hooks/cartoes';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 const Cadastro = () => {
+  const { cartoes, createCartao } = useCartoes();
   const [numCartao, setNumCartao] = useState('');
   const [nome, setNome] = useState('');
   const [vencimento, setVencimento] = useState('');
   const [cvv, setCVV] = useState('');
+  const router = useRouter();
 
   const addChar = (text: string, interval: number, char: '/' | ' ') => 
     text.match(new RegExp(`.{1,${interval}}`, 'g'))!.join(char); 
@@ -34,6 +39,33 @@ const Cadastro = () => {
     else
       setVencimento('');
   }
+
+  const handleCreate = async() => {
+    if(cartoes.find(cartao => cartao.number === numCartao))
+    {
+      console.log('Já existe um cartão com esse número cadastro');
+      return;
+    }
+
+    const cartaoCreated = await createCartao({
+      id: uuidv4(),
+      number: numCartao,
+      name: nome,
+      cvv,
+      expiration: vencimento
+    });
+
+    if(cartaoCreated)
+    {
+      router.push('list');
+    }
+    else
+    {
+      console.log('Houve um problema ao criar o cartão!');
+      return;
+    }
+  }
+
   return (
     <Container>
       <Stack.Screen
@@ -91,6 +123,7 @@ const Cadastro = () => {
               vencimento.length !== 5 ||
               cvv.length !== 3
             }
+            onPress={handleCreate}
           />
         </View>
       </Body>
