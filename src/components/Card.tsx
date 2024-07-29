@@ -7,6 +7,7 @@ export interface CardProps {
   cvv: string;
   name: string;
   number: string;
+  expiration: string;
 }
 
 const CardInfo = ({
@@ -51,7 +52,7 @@ const Card = ({card, variant}: {card: CardProps, variant: 'black' | 'green'}) =>
           } 
           variant={variant} 
         />
-        <CardInfo text={`Validade ${card.cvv}`} variant={variant} />
+        <CardInfo text={`Validade ${card.expiration ?? 'Indisponível'}`} variant={variant} />
       </View>
     </View>
   )
