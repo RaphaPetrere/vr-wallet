@@ -5,33 +5,11 @@ import { Link, Stack } from 'expo-router'
 import theme from '../theme'
 import { FontAwesome5 } from '@expo/vector-icons';
 import Body from '../components/Body'
-import Card, { CardProps } from '../components/Card'
+import Card from '../components/Card'
+import { useCartoes } from '../hooks/cartoes'
 
 const List = () => {
-  const [cards, setCards] = useState<CardProps[]>([
-    {
-      "id": "4ec42ba9-50af-40d2-af90-8312edbd9ca2",
-      "number": "3529 5435 3355 8727",
-      "cvv": "317",
-      "name": "John Doe"
-    },
-    {
-      "id": "4ec42ba9-50af-40d2-af90-8312edbd9ca3",
-      "number": "3529 5435 3355 8727",
-      "cvv": "317",
-      "name": "John Doe"
-    },
-    {
-      "id": "4ec42ba9-50af-40d2-af90-8312edbd9ca4",
-      "number": "3529 5435 3355 8727",
-      "cvv": "317",
-      "name": "John Doe"
-    }
-  ]);
-  /* fetch('http://localhost:3000/cards')
-  .then((res) => res.json())
-  .then(response => setCards(response))
-  .catch(err => console.log('err', err)) */
+  const { cartoes } = useCartoes();
   return (
     <Container showImages={false}>
       <Stack.Screen
@@ -73,13 +51,13 @@ const List = () => {
             height: 200, 
           }}
         >
-          {cards.map((card, index) => (
+          {cartoes.map((card, index) => (
             <View key={card.id}
               style={{
                 position: 'absolute',
                 bottom: (60*index),
                 elevation: 20 - (index * 4),
-                zIndex: cards.length - index,
+                zIndex: cartoes.length - index,
                 shadowColor: theme.black,
               }}
             >
