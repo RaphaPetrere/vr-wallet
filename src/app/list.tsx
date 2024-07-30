@@ -5,11 +5,52 @@ import { Link, Stack } from 'expo-router'
 import theme from '../theme'
 import { FontAwesome5 } from '@expo/vector-icons';
 import Body from '../components/Body'
-import Card from '../components/Card'
+import Card, { CardProps } from '../components/Card'
 import { useCartoes } from '../hooks/cartoes'
+import CustomButton from '../components/CustomButton'
 
 const List = () => {
   const { cartoes } = useCartoes();
+  const [selectedCardIndex, setSelectedCardIndex] = useState<string>();
+  
+  const handleCardSelect = (index: string) => {
+    console.log('index', index);
+    setSelectedCardIndex((currentState) => typeof currentState === 'undefined' ? index : undefined);
+  }
+
+  const CardList = ({cards}: {cards: CardProps[]}) => (
+    <View 
+      style={{
+        position: 'relative', 
+        width: 300, 
+        height: 180 + ((cards.length - 1) * 20)
+      }}
+    >
+      {cards.map((card, index) => (
+        <Pressable 
+          key={card.id}
+          style={{
+            position: 'absolute',
+            bottom: (60 * index),
+            elevation: 20 - (index * 4),
+            zIndex: cards.length - index,
+            shadowColor: theme.black,
+          }}
+          onPress={() => handleCardSelect(card.id)}
+        >
+          <Card 
+            card={card} 
+            variant={
+              cartoes.findIndex(cartao => cartao.id === card.id) % 2 === 0 
+              ? 'black' 
+              : 'green'
+            }
+          />
+        </Pressable>
+      ))}
+    </View>
+  )
+
   return (
     <Container showImages={false}>
       <Stack.Screen
@@ -44,30 +85,39 @@ const List = () => {
         </Text>
       </View>
       <Body>
-        <View 
-          style={{
-            position: 'relative', 
-            width: 300, 
-            height: 200, 
-          }}
-        >
-          {cartoes.map((card, index) => (
-            <View key={card.id}
+        <CardList 
+          cards={
+            typeof selectedCardIndex === 'undefined' 
+            ? cartoes 
+            : cartoes.filter(card => card.id === selectedCardIndex)
+          } 
+        />
+        {typeof selectedCardIndex === 'undefined'
+          ? (
+            <Text 
               style={{
-                position: 'absolute',
-                bottom: (60*index),
-                elevation: 20 - (index * 4),
-                zIndex: cartoes.length - index,
-                shadowColor: theme.black,
+                color: theme.white, 
+                marginTop: 10, 
+                fontSize: 16
               }}
             >
-              <Card card={card} variant={index % 2 === 0 ? 'black' : 'green'} />
+              usar este cartão
+            </Text>
+          )
+          : (
+            <View style={{top: 100, width: 300}}>
+              <CustomButton 
+                type='primary'
+                text='pagar com este cartão'
+              />
+              <View style={{opacity: .5, top: 140}}>
+                <CardList 
+                  cards={cartoes.filter(card => card.id !== selectedCardIndex)}
+                />
+              </View>
             </View>
-          ))}
-        </View>
-        <Text style={{color: theme.white, marginTop: 10, fontSize: 16}}>
-          usar este cartão
-        </Text>
+          )
+        }
         {/* <FlatList 
           data={cards}
           keyExtractor={card => card.id}
