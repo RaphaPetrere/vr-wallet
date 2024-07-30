@@ -9,6 +9,8 @@ import Body from '../components/Body';
 import { useCartoes } from '../hooks/cartoes';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import Card, { CardProps } from '../components/Card';
+import theme from '../theme';
 
 const Cadastro = () => {
   const { cartoes, createCartao } = useCartoes();
@@ -16,6 +18,7 @@ const Cadastro = () => {
   const [nome, setNome] = useState('');
   const [vencimento, setVencimento] = useState('');
   const [cvv, setCVV] = useState('');
+  const [cardToShow, setCardToShow] = useState<CardProps>();
   const router = useRouter();
 
   const addChar = (text: string, interval: number, char: '/' | ' ') => 
@@ -40,29 +43,37 @@ const Cadastro = () => {
       setVencimento('');
   }
 
-  const handleCreate = async() => {
-    if(cartoes.find(cartao => cartao.number === numCartao))
-    {
-      console.log('Já existe um cartão com esse número cadastro');
-      return;
-    }
-
-    const cartaoCreated = await createCartao({
-      id: uuidv4(),
-      number: numCartao,
-      name: nome,
-      cvv,
-      expiration: vencimento
-    });
-
-    if(cartaoCreated)
+  const handleForward = async() => {
+    if(typeof cardToShow !== 'undefined')
     {
       router.push('list');
     }
     else
     {
-      console.log('Houve um problema ao criar o cartão!');
-      return;
+      if(cartoes.find(cartao => cartao.number === numCartao))
+      {
+        console.log('Já existe um cartão com esse número cadastro');
+        return;
+      }
+  
+      const newCard = {
+        id: uuidv4(),
+        number: numCartao,
+        name: nome,
+        cvv,
+        expiration: vencimento
+      };
+      const cartaoCreated = await createCartao(newCard);
+  
+      if(cartaoCreated)
+      {
+        setCardToShow(newCard);
+      }
+      else
+      {
+        console.log('Houve um problema ao criar o cartão!');
+        return;
+      }
     }
   }
 
@@ -79,53 +90,70 @@ const Cadastro = () => {
       />
       <Body>
         <Title />
-        <View style={{width: '100%', gap: 16}}>
-          <CustomInput 
-            label='número do cartão'
-            value={numCartao}
-            maxLength={19}
-            inputMode='numeric'
-            onChangeText={handleNumCartao}
-          />
-          <CustomInput 
-            label='nome do titular do cartão'
-            value={nome}
-            onChangeText={setNome}
-          />
-          <View style={{flexDirection: 'row', gap: 12}}>
-            <View style={{flex: 1}}>
+        {cardToShow
+          ? (
+            <>
+              <Text style={{fontSize: 20, color: theme.white}}>
+                cartão cadastrado com sucesso
+              </Text>
+              <View style={{marginVertical: 30}}>
+                <Card 
+                  card={cardToShow}
+                  variant={cartoes.length % 2 === 0 ? 'black': 'green'}
+                />
+              </View>
+            </>
+          )
+          : (
+            <View style={{width: '100%', gap: 16, marginBottom: 16}}>
               <CustomInput 
-                label='vencimento'
-                value={vencimento}
-                placeholder='00/00'
+                label='número do cartão'
+                value={numCartao}
+                maxLength={19}
                 inputMode='numeric'
-                onChangeText={handleVencimento}
-                maxLength={5}
+                onChangeText={handleNumCartao}
               />
-            </View>
-            <View style={{flex: 1}}>
               <CustomInput 
-                label='código de segurança'
-                value={cvv}
-                placeholder='***'
-                inputMode='numeric'
-                onChangeText={(text) => setCVV(onlyNumbers(text))}
-                maxLength={3}
+                label='nome do titular do cartão'
+                value={nome}
+                onChangeText={setNome}
               />
+              <View style={{flexDirection: 'row', gap: 12}}>
+                <View style={{flex: 1}}>
+                  <CustomInput 
+                    label='vencimento'
+                    value={vencimento}
+                    placeholder='00/00'
+                    inputMode='numeric'
+                    onChangeText={handleVencimento}
+                    maxLength={5}
+                  />
+                </View>
+                <View style={{flex: 1}}>
+                  <CustomInput 
+                    label='código de segurança'
+                    value={cvv}
+                    placeholder='***'
+                    inputMode='numeric'
+                    onChangeText={(text) => setCVV(onlyNumbers(text))}
+                    maxLength={3}
+                  />
+                </View>
+              </View>
             </View>
-          </View>
-          <CustomButton 
-            text='avançar'
-            type='primary'
-            disabled={
-              numCartao.length !== 19 ||
-              nome.length < 5 ||
-              vencimento.length !== 5 ||
-              cvv.length !== 3
-            }
-            onPress={handleCreate}
-          />
-        </View>
+          )
+        }
+        <CustomButton 
+          text='avançar'
+          type='primary'
+          disabled={
+            numCartao.length !== 19 ||
+            nome.length < 5 ||
+            vencimento.length !== 5 ||
+            cvv.length !== 3
+          }
+          onPress={handleForward}
+        />
       </Body>
     </Container>
   )

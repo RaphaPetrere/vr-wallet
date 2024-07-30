@@ -40,7 +40,11 @@ const Card = ({card, variant}: {card: CardProps, variant: 'black' | 'green'}) =>
         borderColor: theme.black
       }}
     >
-      <CardInfo variant={variant} text='Queen Card' size={18} />
+      <CardInfo 
+        variant={variant} 
+        text={`${variant.charAt(0).toUpperCase().concat(variant.slice(1))} Card`} 
+        size={18}
+      />
       <View>
         <CardInfo text={card.name} variant={variant} size={16} />
         <CardInfo 
