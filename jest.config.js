@@ -10,5 +10,14 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^uuid$': '<rootDir>/node_modules/uuid/dist/index.js'
-  }
+  },
+  collectCoverage: true,
+  collectCoverageFrom: [
+    "src/app/*.tsx",
+    "src/utils/*.ts",
+    "!src/**/*.spec.tsx"
+  ],
+  coverageReporters: [
+    "lcov"
+  ]
 }
