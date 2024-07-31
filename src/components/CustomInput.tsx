@@ -15,6 +15,7 @@ const CustomInput = ({label, ...rest}: CustomInputProps) => {
         {label}
       </Text>
       <TextInput 
+        aria-label={label}
         style={{
           backgroundColor: theme.white,
           color: theme.black,
