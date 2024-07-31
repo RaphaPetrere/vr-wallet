@@ -11,6 +11,9 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import Card, { CardProps } from '../components/Card';
 import theme from '../theme';
+import { onlyNumbers } from '../utils/onlyNumbers';
+import { addChar } from '../utils/addChar';
+import { thereIs } from '../utils/thereIs';
 
 const Cadastro = () => {
   const { cartoes, createCartao } = useCartoes();
@@ -20,12 +23,6 @@ const Cadastro = () => {
   const [cvv, setCVV] = useState('');
   const [cardToShow, setCardToShow] = useState<CardProps>();
   const router = useRouter();
-
-  const addChar = (text: string, interval: number, char: '/' | ' ') => 
-    text.match(new RegExp(`.{1,${interval}}`, 'g'))!.join(char); 
-  //Esse Regex adiciona um espaço ou / a cada intervalo
-
-  const onlyNumbers = (text: string) => text.replace(/\D/g, '');
 
   const handleNumCartao = (text: string) => {
     const numWithoutSpaces = onlyNumbers(text);
@@ -44,7 +41,7 @@ const Cadastro = () => {
   }
 
   const handleForward = async() => {
-    if(typeof cardToShow !== 'undefined')
+    if(thereIs(cardToShow))
     {
       router.push('list');
     }

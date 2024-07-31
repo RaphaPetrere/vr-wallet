@@ -8,6 +8,7 @@ import Body from '../components/Body'
 import Card, { CardProps } from '../components/Card'
 import { useCartoes } from '../hooks/cartoes'
 import CustomButton from '../components/CustomButton'
+import { thereIs } from '../utils/thereIs'
 
 const List = () => {
   const { cartoes } = useCartoes();
@@ -15,7 +16,7 @@ const List = () => {
   
   const handleCardSelect = (index: string) => {
     console.log('index', index);
-    setSelectedCardIndex((currentState) => typeof currentState === 'undefined' ? index : undefined);
+    setSelectedCardIndex((currentState) => thereIs(currentState) ? undefined : index);
   }
 
   const CardList = ({cards}: {cards: CardProps[]}) => (
@@ -87,24 +88,13 @@ const List = () => {
       <Body>
         <CardList 
           cards={
-            typeof selectedCardIndex === 'undefined' 
-            ? cartoes 
-            : cartoes.filter(card => card.id === selectedCardIndex)
+            thereIs(selectedCardIndex)
+            ? cartoes.filter(card => card.id === selectedCardIndex)
+            : cartoes 
           } 
         />
-        {typeof selectedCardIndex === 'undefined'
+        {thereIs(selectedCardIndex)
           ? (
-            <Text 
-              style={{
-                color: theme.white, 
-                marginTop: 10, 
-                fontSize: 16
-              }}
-            >
-              usar este cartão
-            </Text>
-          )
-          : (
             <View style={{top: 100, width: 300}}>
               <CustomButton 
                 type='primary'
@@ -116,6 +106,17 @@ const List = () => {
                 />
               </View>
             </View>
+          )
+          : (
+            <Text 
+              style={{
+                color: theme.white, 
+                marginTop: 10, 
+                fontSize: 16
+              }}
+            >
+              usar este cartão
+            </Text>
           )
         }
         {/* <FlatList 
