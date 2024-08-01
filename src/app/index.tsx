@@ -15,7 +15,7 @@ const Home = () => {
       />
       <Body>
         <Title />
-        <View style={{gap: 20, width: '100%'}}>
+        <View style={{gap: 20, width: '100%', marginTop: 10}}>
           <Link href={{pathname: 'list'}} asChild>
             <CustomButton 
               text='meus cartões'

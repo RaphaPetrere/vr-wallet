@@ -15,7 +15,6 @@ const List = () => {
   const [selectedCardIndex, setSelectedCardIndex] = useState<string>();
   
   const handleCardSelect = (index: string) => {
-    console.log('index', index);
     setSelectedCardIndex((currentState) => thereIs(currentState) ? undefined : index);
   }
 

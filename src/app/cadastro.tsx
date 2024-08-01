@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Animated, Easing } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Stack, useRouter } from 'expo-router';
 import Container from '../components/Container';
 import Title from '../components/Title';
@@ -74,6 +74,24 @@ const Cadastro = () => {
     }
   }
 
+  let opacity = new Animated.Value(0);
+  const size = opacity.interpolate({
+    inputRange: [0, .5, 1],
+    outputRange: [0, 40, 0],
+  });
+
+  const animate = () => {
+    opacity.setValue(0);
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 1200,
+      easing: Easing.in(Easing.bounce),
+      useNativeDriver: false,
+    }).start();
+  };
+
+  useEffect(() => {animate()}, [])
+
   return (
     <Container>
       <Stack.Screen
@@ -86,7 +104,14 @@ const Cadastro = () => {
         }}
       />
       <Body>
-        <Title />
+        <Animated.View
+          style={{
+            opacity,
+            bottom: size,
+          }}
+        >
+          <Title />
+        </Animated.View>
         {cardToShow
           ? (
             <>
