@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { CardProps } from '../components/Card'
 import request from '../service/request';
+import Toast from 'react-native-root-toast';
 
 interface CartoesContextData {
   cartoes: CardProps[];
@@ -28,6 +29,14 @@ const CartoesProvider = ({ children }: {children: React.ReactNode}) => {
       return true;
     })
     .catch(err => {
+      Toast.show(err, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+      });
       console.log(err);
       return false;
     })
@@ -37,7 +46,17 @@ const CartoesProvider = ({ children }: {children: React.ReactNode}) => {
     request({route: 'cards'})
     .then(res => res.json())
     .then((response) => setCartoes(response))
-    .catch(err => console.log(err))
+    .catch(err => {
+      Toast.show(err, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+      });
+      console.log(err);
+    })
   }, [])
 
   return (
