@@ -1,0 +1,1 @@
+export const thereIs = (value: any) => typeof value !== 'undefined'
