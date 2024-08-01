@@ -14,6 +14,7 @@ import theme from '../theme';
 import { onlyNumbers } from '../utils/onlyNumbers';
 import { addChar } from '../utils/addChar';
 import { thereIs } from '../utils/thereIs';
+import Toast from 'react-native-root-toast';
 
 const Cadastro = () => {
   const { cartoes, createCartao } = useCartoes();
@@ -49,7 +50,14 @@ const Cadastro = () => {
     {
       if(cartoes.find(cartao => cartao.number === numCartao))
       {
-        console.log('Já existe um cartão com esse número cadastro');
+        Toast.show('Já existe um cartão com esse número cadastro', {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.CENTER,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
         return;
       }
   
@@ -68,7 +76,14 @@ const Cadastro = () => {
       }
       else
       {
-        console.log('Houve um problema ao criar o cartão!');
+        Toast.show('Houve um problema ao criar o cartão!', {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.CENTER,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
         return;
       }
     }

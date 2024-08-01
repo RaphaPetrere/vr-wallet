@@ -85,64 +85,45 @@ const List = () => {
         </Text>
       </View>
       <Body>
-        <CardList 
-          cards={
-            thereIs(selectedCardIndex)
-            ? cartoes.filter(card => card.id === selectedCardIndex)
-            : cartoes 
-          } 
-        />
-        {thereIs(selectedCardIndex)
-          ? (
-            <View style={{top: 100, width: 300}}>
-              <CustomButton 
-                type='primary'
-                text='pagar com este cartão'
-              />
-              <View style={{opacity: .5, top: 140}}>
-                <CardList 
-                  cards={cartoes.filter(card => card.id !== selectedCardIndex)}
-                />
-              </View>
-            </View>
-          )
-          : (
-            <Text 
-              style={{
-                color: theme.white, 
-                marginTop: 10, 
-                fontSize: 16
-              }}
-            >
-              usar este cartão
-            </Text>
-          )
+        {cartoes.length > 0
+          ?
+          <>
+            <CardList 
+              cards={
+                thereIs(selectedCardIndex)
+                ? cartoes.filter(card => card.id === selectedCardIndex)
+                : cartoes 
+              } 
+            />
+            {thereIs(selectedCardIndex)
+              ? (
+                <View style={{top: 100, width: 300}}>
+                  <CustomButton 
+                    type='primary'
+                    text='pagar com este cartão'
+                  />
+                  <View style={{opacity: .5, top: 140}}>
+                    <CardList 
+                      cards={cartoes.filter(card => card.id !== selectedCardIndex)}
+                    />
+                  </View>
+                </View>
+              )
+              : (
+                <Text 
+                  style={{
+                    color: theme.white, 
+                    marginTop: 10, 
+                    fontSize: 16
+                  }}
+                >
+                  usar este cartão
+                </Text>
+              )
+            }
+          </>
+          : <Text style={{color: theme.white, fontSize: 28}}>Sem cartões para usar</Text>
         }
-        {/* <FlatList 
-          data={cards}
-          keyExtractor={card => card.id}
-          renderItem={({item, index}) => (
-            <View key={item.id}
-              style={{
-                position: 'absolute',
-                bottom: (50*index),
-                left: 0,
-                elevation: cards.length - index,
-                zIndex: cards.length - index
-              }}
-            >
-              <Card card={item} />
-              <Text>Index {index}</Text>
-            </View>
-          )}
-          style={{
-            height: 200, 
-            width: 300, 
-            flexGrow: 0, 
-            position: 'relative', 
-            backgroundColor: 'red'
-          }}
-        /> */}
       </Body>
     </Container>
   )
